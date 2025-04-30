@@ -1248,7 +1248,8 @@
 
       <!-- Import CSV -->
       <div class="font-medium mb-2">
-        Step 2: Import search volume from searchvolume.io (limit 800 rows)
+        Step 2: Import search volume from searchvolume.io (limit 800 rows, you
+        can import multiple CSVs in one time)
       </div>
       <div class="mb-6 p-4 bg-white border rounded shadow-sm">
         <div class="flex space-x-2">
@@ -1256,13 +1257,14 @@
             id="importCSVInput"
             type="file"
             accept=".csv"
+            multiple
             class="px-2 py-1 border rounded flex-1"
           />
           <button
             id="importCSVButton"
             class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
           >
-            Import CSV
+            Import CSV(s)
           </button>
         </div>
       </div>
