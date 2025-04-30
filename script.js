@@ -236,6 +236,102 @@ document.querySelectorAll("[data-group-child]").forEach((childCheckbox) => {
   };
 });
 
+// Tab switching logic
+document.getElementById("tab-new").onclick = function () {
+  document.getElementById("tab-panel-new").classList.remove("hidden");
+  document.getElementById("tab-panel-continue").classList.add("hidden");
+  this.classList.add("border-blue-500", "text-blue-600");
+  this.classList.remove("border-transparent", "text-gray-500");
+  document
+    .getElementById("tab-continue")
+    .classList.remove("border-blue-500", "text-blue-600");
+  document
+    .getElementById("tab-continue")
+    .classList.add("border-transparent", "text-gray-500");
+};
+document.getElementById("tab-continue").onclick = function () {
+  document.getElementById("tab-panel-new").classList.add("hidden");
+  document.getElementById("tab-panel-continue").classList.remove("hidden");
+  this.classList.add("border-blue-500", "text-blue-600");
+  this.classList.remove("border-transparent", "text-gray-500");
+  document
+    .getElementById("tab-new")
+    .classList.remove("border-blue-500", "text-blue-600");
+  document
+    .getElementById("tab-new")
+    .classList.add("border-transparent", "text-gray-500");
+};
+
+// CSV import for "Continue a research"
+document.getElementById("continueCSVButton").onclick = () => {
+  const input = document.getElementById("continueCSVInput");
+  if (!input.files.length) {
+    alert("Select one or more CSV files first");
+    return;
+  }
+  let filesProcessed = 0;
+  Array.from(input.files).forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      reader.result.split("\n").forEach((line) => {
+        const [term, multiPos, googlePos, ytPos, monthlySearches] =
+          line.split(";");
+        if (term && term.trim()) {
+          const t = term.trim();
+          // If already exists, merge positions and recalculate averages
+          if (!resultsMap[t]) {
+            resultsMap[t] = {
+              googlePositions:
+                googlePos && googlePos !== "not found"
+                  ? [parseFloat(googlePos)]
+                  : [],
+              ytPositions:
+                ytPos && ytPos !== "not found" ? [parseFloat(ytPos)] : [],
+              monthlySearches: monthlySearches || null,
+            };
+          } else {
+            // Merge google positions
+            if (googlePos && googlePos !== "not found") {
+              resultsMap[t].googlePositions.push(parseFloat(googlePos));
+            }
+            // Merge yt positions
+            if (ytPos && ytPos !== "not found") {
+              resultsMap[t].ytPositions.push(parseFloat(ytPos));
+            }
+            // Update monthlySearches if present
+            if (monthlySearches) {
+              resultsMap[t].monthlySearches = monthlySearches;
+            }
+          }
+        }
+      });
+      filesProcessed++;
+      if (filesProcessed === input.files.length) {
+        // After merging, recalculate averages for all terms
+        Object.values(resultsMap).forEach((info) => {
+          if (info.googlePositions.length > 1) {
+            // Remove duplicates and average
+            info.googlePositions = [
+              info.googlePositions.reduce((a, b) => a + b, 0) /
+                info.googlePositions.length,
+            ];
+          }
+          if (info.ytPositions.length > 1) {
+            info.ytPositions = [
+              info.ytPositions.reduce((a, b) => a + b, 0) /
+                info.ytPositions.length,
+            ];
+          }
+        });
+        currentPage = 1;
+        updateTable();
+        alert("All CSV files imported.");
+      }
+    };
+    reader.readAsText(file);
+  });
+};
+
 // Collect selected modifiers
 function getModifiers() {
   return Array.from(
@@ -416,6 +512,59 @@ document.getElementById("copyAllTable").onclick = () => {
   navigator.clipboard
     .writeText(rows.join("\n"))
     .then(() => alert(`Copied ${rows.length} rows`));
+};
+
+// --- Export Selected (CSV) ---
+document.getElementById("exportSelectedCSV").onclick = () => {
+  const selSet = new Set(
+    Array.from(document.querySelectorAll(".row-select:checked")).map(
+      (cb) => cb.dataset.term
+    )
+  );
+  const rows = getAllRows()
+    .filter((r) => selSet.has(r.term))
+    .map((r) =>
+      [r.term, r.multiPos, r.googlePos, r.ytPos, r.monthlySearches || ""].join(
+        ";"
+      )
+    );
+  if (rows.length === 0) {
+    alert("No rows selected.");
+    return;
+  }
+  const csvContent = rows.join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "selected_keywords.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+// --- Export All (CSV) ---
+document.getElementById("exportAllCSV").onclick = () => {
+  const rows = getAllRows().map((r) =>
+    [r.term, r.multiPos, r.googlePos, r.ytPos, r.monthlySearches || ""].join(
+      ";"
+    )
+  );
+  if (rows.length === 0) {
+    alert("No data to export.");
+    return;
+  }
+  const csvContent = rows.join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "all_keywords.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };
 
 // Pagination & sorting
