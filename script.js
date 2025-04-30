@@ -349,21 +349,30 @@ function performSearchAll() {
 document.getElementById("importCSVButton").onclick = () => {
   const input = document.getElementById("importCSVInput");
   if (!input.files.length) {
-    alert("Select CSV first");
+    alert("Select one or more CSV files first");
     return;
   }
-  const reader = new FileReader();
-  reader.onload = () => {
-    reader.result.split("\n").forEach((line) => {
-      const [kw, vol] = line.split(";").map((s) => s.trim());
-      if (resultsMap[kw]) {
-        resultsMap[kw].monthlySearches = vol;
+
+  let filesProcessed = 0;
+
+  Array.from(input.files).forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      reader.result.split("\n").forEach((line) => {
+        const [kw, vol] = line.split(";").map((s) => s.trim());
+        if (kw && resultsMap[kw]) {
+          resultsMap[kw].monthlySearches = vol;
+        }
+      });
+      filesProcessed++;
+      if (filesProcessed === input.files.length) {
+        currentPage = 1;
+        updateTable();
+        alert("All CSV files imported.");
       }
-    });
-    currentPage = 1;
-    updateTable();
-  };
-  reader.readAsText(input.files[0]);
+    };
+    reader.readAsText(file);
+  });
 };
 
 // Table operations: copy selected/all and table formats
