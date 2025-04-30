@@ -87,6 +87,24 @@ function getAllRows() {
     });
 }
 
+// Listen for changes on the input
+const rowsPerPageInput = document.getElementById("rowsPerPageInput");
+if (rowsPerPageInput) {
+  rowsPerPageInput.value = resultsPerPage;
+  rowsPerPageInput.addEventListener("input", (e) => {
+    const newVal = parseInt(e.target.value, 10);
+    if (!isNaN(newVal) && newVal > 0) {
+      // Calculate the index of the first row currently shown
+      const firstRowIndex = (currentPage - 1) * resultsPerPage;
+      resultsPerPage = newVal;
+
+      // Calculate the new page so the first visible row stays visible
+      currentPage = Math.floor(firstRowIndex / resultsPerPage) + 1;
+      updateTable();
+    }
+  });
+}
+
 // Render table
 function updateTable() {
   const allRows = getAllRows();
