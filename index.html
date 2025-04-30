@@ -116,26 +116,32 @@
       <div class="options-row mb-4">
         <!-- Alphabet Soup -->
         <div class="options-half bg-white p-4 border rounded shadow-sm">
-          <div class="mb-2 font-medium">Alphabet Soup:</div>
+          <div class="mb-2 font-medium">
+            Select how you want to generate keywords to be searched (alphabeth
+            soup):
+          </div>
           <fieldset class="flex flex-col space-y-2">
             <label class="flex items-center space-x-1">
               <input type="checkbox" id="tailCheckbox" checked />
-              <span>Tail (&hellip; a–z)</span>
+              <span>Tail ({keyword} a–z)</span>
             </label>
             <label class="flex items-center space-x-1">
               <input type="checkbox" id="headCheckbox" checked />
-              <span>Head (a–z &hellip;)</span>
+              <span>Head (a–z {keyword})</span>
             </label>
             <label class="flex items-center space-x-1">
               <input type="checkbox" id="betweenCheckbox" checked />
-              <span>Words Between</span>
+              <span>Words Between ({keyword1} a-z {keyword2})</span>
             </label>
           </fieldset>
         </div>
 
         <!-- Modifiers -->
         <div class="options-half bg-white p-4 border rounded shadow-sm">
-          <div class="mb-2 font-medium">Step 1.5: choose modifiers</div>
+          <div class="mb-2 font-medium">
+            Choose which modifiers you want to use to generate keywords to be
+            searched:
+          </div>
           <div class="dropdown mb-2">
             <button
               id="modifierToggle"
