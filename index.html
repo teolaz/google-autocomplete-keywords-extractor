@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Keyword Fetcher with Pagination & Batch Search</title>
+    <title>Keywords Extractor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       #progressBarContainer {
@@ -96,1154 +96,1200 @@
   <body class="bg-gray-100 p-4">
     <div class="container mx-auto">
       <h1 class="text-2xl font-bold mb-4">
-        Google Search Autocomplete Keyword Extractor
+        Google Search Autocomplete Keywords Extractor
       </h1>
 
-      <!-- Step 1: Keywords -->
-      <div class="mb-4">
-        <div class="font-medium mb-2">
-          Step 1: insert keywords to search separated by new line
-        </div>
-        <textarea
-          id="searchInput"
-          rows="5"
-          class="w-full px-3 py-2 border rounded shadow-sm focus:outline-none"
-          placeholder="Enter one keyword per line…"
-        ></textarea>
+      <!-- Tabs Navigation -->
+      <div class="mb-4 border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+          <button
+            id="tab-new"
+            class="tab-btn border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none"
+            type="button"
+          >
+            Start a new research
+          </button>
+          <button
+            id="tab-continue"
+            class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none"
+            type="button"
+          >
+            Continue a research
+          </button>
+        </nav>
       </div>
 
-      <!-- Options Row -->
-      <div class="options-row mb-4">
-        <!-- Alphabet Soup -->
-        <div class="options-half bg-white p-4 border rounded shadow-sm">
-          <div class="mb-2 font-medium">
-            Select how you want to generate keywords to be searched (alphabeth
-            soup):
+      <!-- Tab Panels -->
+      <div id="tab-panel-new">
+        <!-- Step 1: Keywords -->
+        <div class="mb-4">
+          <div class="font-medium mb-2">
+            Step 1: insert keywords to search separated by new line
           </div>
-          <fieldset class="flex flex-col space-y-2">
-            <label class="flex items-center space-x-1">
-              <input type="checkbox" id="tailCheckbox" checked />
-              <span>Tail ({keyword} a–z)</span>
-            </label>
-            <label class="flex items-center space-x-1">
-              <input type="checkbox" id="headCheckbox" checked />
-              <span>Head (a–z {keyword})</span>
-            </label>
-            <label class="flex items-center space-x-1">
-              <input type="checkbox" id="betweenCheckbox" checked />
-              <span>Words Between ({keyword1} a-z {keyword2})</span>
-            </label>
-          </fieldset>
+          <textarea
+            id="searchInput"
+            rows="5"
+            class="w-full px-3 py-2 border rounded shadow-sm focus:outline-none"
+            placeholder="Enter one keyword per line…"
+          ></textarea>
         </div>
-
-        <!-- Modifiers -->
-        <div class="options-half bg-white p-4 border rounded shadow-sm">
-          <div class="mb-2 font-medium">
-            Choose which modifiers you want to use to generate keywords to be
-            searched:
-          </div>
-          <div class="dropdown mb-2">
-            <button
-              id="modifierToggle"
-              class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-            >
-              Select Modifiers
-            </button>
-            <div id="modifierMenu" class="dropdown-menu">
-              <ul>
-                <!-- Question Words -->
-                <li>
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="modifier-group"
-                      data-group="q"
-                    />
-                    <strong>Question Words (prefix)</strong>
-                  </label>
-                  <ul>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="who *"
-                        />
-                        who *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="what *"
-                        />
-                        what *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="what are the *"
-                        />
-                        what are the *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="what is the *"
-                        />
-                        what is the *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="when *"
-                        />
-                        when *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="when can *"
-                        />
-                        when can *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="where *"
-                        />
-                        where *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="why *"
-                        />
-                        why *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="how *"
-                        />
-                        how *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="how can *"
-                        />
-                        how can *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="how do *"
-                        />
-                        how do *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="how does *"
-                        />
-                        how does *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="can *"
-                        />
-                        can *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="can you *"
-                        />
-                        can you *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="could *"
-                        />
-                        could *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="will *"
-                        />
-                        will *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="would *"
-                        />
-                        would *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="should *"
-                        />
-                        should *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="may *"
-                        />
-                        may *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="might *"
-                        />
-                        might *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="must *"
-                        />
-                        must *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="shall *"
-                        />
-                        shall *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="are *"
-                        />
-                        are *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="are there *"
-                        />
-                        are there *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="is *"
-                        />
-                        is *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="were *"
-                        />
-                        were *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="was *"
-                        />
-                        was *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="do *"
-                        />
-                        do *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="does *"
-                        />
-                        does *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="did *"
-                        />
-                        did *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          type="checkbox"
-                          data-group-child="q"
-                          data-type="prefix"
-                          value="if *"
-                        />
-                        if *</label
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <!-- Comparison Modifiers -->
-                <li>
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="modifier-group"
-                      data-group="cmp"
-                    />
-                    <strong>Comparison Modifiers (suffix)</strong></label
-                  >
-                  <ul>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="cmp"
-                          type="checkbox"
-                          value="* versus"
-                        />
-                        * versus</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="cmp"
-                          type="checkbox"
-                          value="* vs"
-                        />
-                        * vs</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="cmp"
-                          type="checkbox"
-                          value="* compared to"
-                        />
-                        * compared to</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="cmp"
-                          type="checkbox"
-                          value="* compared with"
-                        />
-                        * compared with</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="cmp"
-                          type="checkbox"
-                          value="* like"
-                        />
-                        * like</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="cmp"
-                          type="checkbox"
-                          value="* similar to"
-                        />
-                        * similar to</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="cmp"
-                          type="checkbox"
-                          value="* than"
-                        />
-                        * than</label
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <!-- Conjunctions -->
-                <li>
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="modifier-group"
-                      data-group="conj"
-                    />
-                    <strong>Conjunctions (suffix)</strong></label
-                  >
-                  <ul>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="conj"
-                          type="checkbox"
-                          value="* and"
-                        />
-                        * and</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="conj"
-                          type="checkbox"
-                          value="* or"
-                        />
-                        * or</label
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <!-- Prepositions -->
-                <li>
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="modifier-group"
-                      data-group="prep"
-                    />
-                    <strong>Prepositions (suffix)</strong></label
-                  >
-                  <ul>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* in"
-                        />
-                        * in</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* on"
-                        />
-                        * on</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* at"
-                        />
-                        * at</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* by"
-                        />
-                        * by</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* for"
-                        />
-                        * for</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* with"
-                        />
-                        * with</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* about"
-                        />
-                        * about</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* of"
-                        />
-                        * of</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* from"
-                        />
-                        * from</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="prep"
-                          type="checkbox"
-                          value="* to"
-                        />
-                        * to</label
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <!-- Adjectives & Adverbs -->
-                <li>
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="modifier-group"
-                      data-group="adj"
-                    />
-                    <strong>Adjectives & Adverbs (prefix)</strong></label
-                  >
-                  <ul>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="best *"
-                        />
-                        best *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="top *"
-                        />
-                        top *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="cheap *"
-                        />
-                        cheap *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="free *"
-                        />
-                        free *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="new *"
-                        />
-                        new *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="latest *"
-                        />
-                        latest *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="current *"
-                        />
-                        current *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="original *"
-                        />
-                        original *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="official *"
-                        />
-                        official *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="similar *"
-                        />
-                        similar *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="safe *"
-                        />
-                        safe *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="reliable *"
-                        />
-                        reliable *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="quick *"
-                        />
-                        quick *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="fast *"
-                        />
-                        fast *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="big *"
-                        />
-                        big *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="small *"
-                        />
-                        small *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="high *"
-                        />
-                        high *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="affordable *"
-                        />
-                        affordable *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="quality *"
-                        />
-                        quality *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="cheaply *"
-                        />
-                        cheaply *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="cheaper *"
-                        />
-                        cheaper *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="fastest *"
-                        />
-                        fastest *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="easiest *"
-                        />
-                        easiest *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="simplest *"
-                        />
-                        simplest *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="advanced *"
-                        />
-                        advanced *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="adj"
-                          type="checkbox"
-                          value="simple *"
-                        />
-                        simple *</label
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <!-- Education & Study -->
-                <li>
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="modifier-group"
-                      data-group="edu"
-                    />
-                    <strong>Education & Study (mixed)</strong></label
-                  >
-                  <ul>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* tutorial"
-                        />
-                        * tutorial</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="prefix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="how to *"
-                        />
-                        how to *</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* step by step"
-                        />
-                        * step by step</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* guide"
-                        />
-                        * guide</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* example"
-                        />
-                        * example</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* manual"
-                        />
-                        * manual</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* documentation"
-                        />
-                        * documentation</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* course"
-                        />
-                        * course</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* courses"
-                        />
-                        * courses</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* class"
-                        />
-                        * class</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* classes"
-                        />
-                        * classes</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* lesson"
-                        />
-                        * lesson</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* lessons"
-                        />
-                        * lessons</label
-                      >
-                    </li>
-                    <li>
-                      <label
-                        ><input
-                          data-type="suffix"
-                          data-group-child="edu"
-                          type="checkbox"
-                          value="* syllabus"
-                        />
-                        * syllabus</label
-                      >
-                    </li>
-                  </ul>
-                </li>
-              </ul>
+        <!-- Options Row -->
+        <div class="options-row mb-4">
+          <!-- Alphabet Soup -->
+          <div class="options-half bg-white p-4 border rounded shadow-sm">
+            <div class="mb-2 font-medium">
+              Select how you want to generate keywords to be searched (alphabeth
+              soup):
             </div>
+            <fieldset class="flex flex-col space-y-2">
+              <label class="flex items-center space-x-1">
+                <input type="checkbox" id="tailCheckbox" checked />
+                <span>Tail ({keyword} a–z)</span>
+              </label>
+              <label class="flex items-center space-x-1">
+                <input type="checkbox" id="headCheckbox" checked />
+                <span>Head (a–z {keyword})</span>
+              </label>
+              <label class="flex items-center space-x-1">
+                <input type="checkbox" id="betweenCheckbox" checked />
+                <span>Words Between ({keyword1} a-z {keyword2})</span>
+              </label>
+            </fieldset>
           </div>
-          <label class="flex items-center space-x-2">
-            <input type="checkbox" id="modifierSoupCheckbox" />
-            <span>Do alphabet soup with each selected modifier</span>
-          </label>
+
+          <!-- Modifiers -->
+          <div class="options-half bg-white p-4 border rounded shadow-sm">
+            <div class="mb-2 font-medium">
+              Choose which modifiers you want to use to generate keywords to be
+              searched:
+            </div>
+            <div class="dropdown mb-2">
+              <button
+                id="modifierToggle"
+                class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Select Modifiers
+              </button>
+              <div id="modifierMenu" class="dropdown-menu">
+                <ul>
+                  <!-- Question Words -->
+                  <li>
+                    <label
+                      ><input
+                        type="checkbox"
+                        class="modifier-group"
+                        data-group="q"
+                      />
+                      <strong>Question Words (prefix)</strong>
+                    </label>
+                    <ul>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="who *"
+                          />
+                          who *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="what *"
+                          />
+                          what *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="what are the *"
+                          />
+                          what are the *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="what is the *"
+                          />
+                          what is the *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="when *"
+                          />
+                          when *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="when can *"
+                          />
+                          when can *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="where *"
+                          />
+                          where *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="why *"
+                          />
+                          why *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="how *"
+                          />
+                          how *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="how can *"
+                          />
+                          how can *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="how do *"
+                          />
+                          how do *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="how does *"
+                          />
+                          how does *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="can *"
+                          />
+                          can *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="can you *"
+                          />
+                          can you *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="could *"
+                          />
+                          could *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="will *"
+                          />
+                          will *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="would *"
+                          />
+                          would *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="should *"
+                          />
+                          should *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="may *"
+                          />
+                          may *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="might *"
+                          />
+                          might *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="must *"
+                          />
+                          must *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="shall *"
+                          />
+                          shall *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="are *"
+                          />
+                          are *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="are there *"
+                          />
+                          are there *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="is *"
+                          />
+                          is *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="were *"
+                          />
+                          were *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="was *"
+                          />
+                          was *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="do *"
+                          />
+                          do *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="does *"
+                          />
+                          does *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="did *"
+                          />
+                          did *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            type="checkbox"
+                            data-group-child="q"
+                            data-type="prefix"
+                            value="if *"
+                          />
+                          if *</label
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <!-- Comparison Modifiers -->
+                  <li>
+                    <label
+                      ><input
+                        type="checkbox"
+                        class="modifier-group"
+                        data-group="cmp"
+                      />
+                      <strong>Comparison Modifiers (suffix)</strong></label
+                    >
+                    <ul>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="cmp"
+                            type="checkbox"
+                            value="* versus"
+                          />
+                          * versus</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="cmp"
+                            type="checkbox"
+                            value="* vs"
+                          />
+                          * vs</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="cmp"
+                            type="checkbox"
+                            value="* compared to"
+                          />
+                          * compared to</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="cmp"
+                            type="checkbox"
+                            value="* compared with"
+                          />
+                          * compared with</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="cmp"
+                            type="checkbox"
+                            value="* like"
+                          />
+                          * like</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="cmp"
+                            type="checkbox"
+                            value="* similar to"
+                          />
+                          * similar to</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="cmp"
+                            type="checkbox"
+                            value="* than"
+                          />
+                          * than</label
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <!-- Conjunctions -->
+                  <li>
+                    <label
+                      ><input
+                        type="checkbox"
+                        class="modifier-group"
+                        data-group="conj"
+                      />
+                      <strong>Conjunctions (suffix)</strong></label
+                    >
+                    <ul>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="conj"
+                            type="checkbox"
+                            value="* and"
+                          />
+                          * and</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="conj"
+                            type="checkbox"
+                            value="* or"
+                          />
+                          * or</label
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <!-- Prepositions -->
+                  <li>
+                    <label
+                      ><input
+                        type="checkbox"
+                        class="modifier-group"
+                        data-group="prep"
+                      />
+                      <strong>Prepositions (suffix)</strong></label
+                    >
+                    <ul>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* in"
+                          />
+                          * in</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* on"
+                          />
+                          * on</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* at"
+                          />
+                          * at</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* by"
+                          />
+                          * by</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* for"
+                          />
+                          * for</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* with"
+                          />
+                          * with</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* about"
+                          />
+                          * about</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* of"
+                          />
+                          * of</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* from"
+                          />
+                          * from</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="prep"
+                            type="checkbox"
+                            value="* to"
+                          />
+                          * to</label
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <!-- Adjectives & Adverbs -->
+                  <li>
+                    <label
+                      ><input
+                        type="checkbox"
+                        class="modifier-group"
+                        data-group="adj"
+                      />
+                      <strong>Adjectives & Adverbs (prefix)</strong></label
+                    >
+                    <ul>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="best *"
+                          />
+                          best *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="top *"
+                          />
+                          top *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="cheap *"
+                          />
+                          cheap *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="free *"
+                          />
+                          free *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="new *"
+                          />
+                          new *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="latest *"
+                          />
+                          latest *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="current *"
+                          />
+                          current *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="original *"
+                          />
+                          original *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="official *"
+                          />
+                          official *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="similar *"
+                          />
+                          similar *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="safe *"
+                          />
+                          safe *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="reliable *"
+                          />
+                          reliable *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="quick *"
+                          />
+                          quick *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="fast *"
+                          />
+                          fast *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="big *"
+                          />
+                          big *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="small *"
+                          />
+                          small *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="high *"
+                          />
+                          high *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="affordable *"
+                          />
+                          affordable *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="quality *"
+                          />
+                          quality *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="cheaply *"
+                          />
+                          cheaply *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="cheaper *"
+                          />
+                          cheaper *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="fastest *"
+                          />
+                          fastest *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="easiest *"
+                          />
+                          easiest *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="simplest *"
+                          />
+                          simplest *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="advanced *"
+                          />
+                          advanced *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="adj"
+                            type="checkbox"
+                            value="simple *"
+                          />
+                          simple *</label
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <!-- Education & Study -->
+                  <li>
+                    <label
+                      ><input
+                        type="checkbox"
+                        class="modifier-group"
+                        data-group="edu"
+                      />
+                      <strong>Education & Study (mixed)</strong></label
+                    >
+                    <ul>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* tutorial"
+                          />
+                          * tutorial</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="prefix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="how to *"
+                          />
+                          how to *</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* step by step"
+                          />
+                          * step by step</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* guide"
+                          />
+                          * guide</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* example"
+                          />
+                          * example</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* manual"
+                          />
+                          * manual</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* documentation"
+                          />
+                          * documentation</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* course"
+                          />
+                          * course</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* courses"
+                          />
+                          * courses</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* class"
+                          />
+                          * class</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* classes"
+                          />
+                          * classes</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* lesson"
+                          />
+                          * lesson</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* lessons"
+                          />
+                          * lessons</label
+                        >
+                      </li>
+                      <li>
+                        <label
+                          ><input
+                            data-type="suffix"
+                            data-group-child="edu"
+                            type="checkbox"
+                            value="* syllabus"
+                          />
+                          * syllabus</label
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" id="modifierSoupCheckbox" />
+              <span>Do alphabet soup with each selected modifier</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Centered Buttons -->
+        <div class="centered">
+          <button
+            id="startSearchButton"
+            class="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Start Search
+          </button>
+          <button
+            id="stopSearchButton"
+            class="px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700"
+            disabled
+          >
+            Stop Search
+          </button>
         </div>
       </div>
 
-      <!-- Centered Buttons -->
-      <div class="centered">
-        <button
-          id="startSearchButton"
-          class="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Start Search
-        </button>
-        <button
-          id="stopSearchButton"
-          class="px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700"
-          disabled
-        >
-          Stop Search
-        </button>
+      <div id="tab-panel-continue" class="hidden">
+        <div class="mb-4 font-medium">
+          Step 1: Upload 1 or more CSV files previously exported from this tool
+          ( CSVs separated by ; ).
+        </div>
+        <div class="mb-6 p-4 bg-white border rounded shadow-sm">
+          <div class="flex space-x-2">
+            <input
+              id="continueCSVInput"
+              type="file"
+              accept=".csv"
+              multiple
+              class="px-2 py-1 border rounded flex-1"
+            />
+            <button
+              id="continueCSVButton"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Import CSV
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Import CSV -->
@@ -1296,6 +1342,18 @@
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Copy All (table format)
+          </button>
+          <button
+            id="exportSelectedCSV"
+            class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+          >
+            Export Selected (CSV)
+          </button>
+          <button
+            id="exportAllCSV"
+            class="px-4 py-2 bg-orange-700 text-white rounded hover:bg-orange-800"
+          >
+            Export All (CSV)
           </button>
         </div>
       </div>
