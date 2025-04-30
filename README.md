@@ -13,5 +13,6 @@ Don't over exagerate with requests, as I don't know how Google IP ban works.
 
 When searched, you can extract data and send it to searchvolume.io and import those values on the table.
 searchvolume.io limit copypasting to 800 lines, so I created different pages on table to be scrolled.
+Errata corridge: doing too many requests in a short amount of time activate some searchvolume.io defenses, don't do more than 10 requests per hour (arbitrary).
 
 Next, use the Copy button (table format) to paste directly on an Excel/Google Sheet/Libreoffice Calc table and proceed with your job.
