@@ -17,12 +17,27 @@ function processQueue() {
   }
 }
 
+// Format ETA string
+function formatETA(seconds) {
+  if (seconds <= 0) return "ETA <1s";
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return (
+    "ETA " +
+    (h ? h + "h " : "") +
+    (m ? m + "m " : "") +
+    (s || (!h && !m) ? s + "s" : "")
+  ).trim();
+}
+
 // Progress bar
 function showProgressBar(count) {
   totalRequests = count;
   completedRequests = 0;
   document.getElementById("progressBar").style.width = "0%";
   document.getElementById("progressBarContainer").style.display = "block";
+  updateTable();
 }
 function updateProgressBar() {
   const pct = totalRequests
@@ -33,7 +48,10 @@ function updateProgressBar() {
     setTimeout(() => {
       document.getElementById("progressBarContainer").style.display = "none";
       stopSearch();
+      updateTable(); // this to clear ETA
     }, 300);
+  } else {
+    updateTable(); // this to update ETA as progress
   }
 }
 
@@ -130,9 +148,18 @@ function updateTable() {
     tbody.appendChild(tr);
   });
 
+  // --- ETA logic ---
+  let etaStr = "";
+  if (searching && totalRequests > 0 && completedRequests < totalRequests) {
+    // 300ms throttle per request, so 1 request every 0.3s
+    const remaining = totalRequests - completedRequests;
+    const seconds = Math.ceil(remaining * 0.3);
+    etaStr = " - " + formatETA(seconds);
+  }
+
   document.getElementById("pageInfo").textContent = total
-    ? `Showing ${start + 1}–${end} of ${total} rows`
-    : "Showing 0–0 of 0 rows";
+    ? `Showing ${start + 1}–${end} of ${total} rows${etaStr}`
+    : `Showing 0–0 of 0 rows${etaStr}`;
 
   document.getElementById("prevPage").disabled = currentPage === 1;
   document.getElementById("nextPage").disabled = end >= total;
