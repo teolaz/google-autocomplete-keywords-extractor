@@ -69,6 +69,7 @@ function addResult(term, pos, isGoogle, isYouTube) {
 }
 
 // Build all rows for display
+// modded 5/1/2025: added logic to order by presence of both googlePos and ytPos
 function getAllRows() {
   return Object.entries(resultsMap)
     .map(([term, info]) => {
@@ -99,9 +100,31 @@ function getAllRows() {
       };
     })
     .sort((a, b) => {
-      let v1 = parseFloat(a[currentSort.key]) || 0;
-      let v2 = parseFloat(b[currentSort.key]) || 0;
-      return currentSort.asc ? v1 - v2 : v2 - v1;
+      // Enhanced sorting: always favor rows with both googlePos and ytPos present
+      function hasBoth(row) {
+        return row.googlePos !== "not found" && row.ytPos !== "not found";
+      }
+      const key = currentSort.key;
+      const asc = currentSort.asc;
+
+      // For position columns, prioritize rows with both sources
+      if (key === "multiPos" || key === "googlePos" || key === "ytPos") {
+        const aBoth = hasBoth(a);
+        const bBoth = hasBoth(b);
+        if (aBoth && !bBoth) return -1;
+        if (!aBoth && bBoth) return 1;
+      }
+
+      // Now sort by the selected key
+      let v1 = a[key];
+      let v2 = b[key];
+
+      // Treat "not found" as Infinity for ascending, -Infinity for descending
+      const notFoundValue = asc ? Infinity : -Infinity;
+      v1 = v1 === "not found" ? notFoundValue : parseFloat(v1) || 0;
+      v2 = v2 === "not found" ? notFoundValue : parseFloat(v2) || 0;
+
+      return asc ? v1 - v2 : v2 - v1;
     });
 }
 
