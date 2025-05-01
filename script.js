@@ -100,31 +100,51 @@ function getAllRows() {
       };
     })
     .sort((a, b) => {
-      // Enhanced sorting: always favor rows with both googlePos and ytPos present
-      function hasBoth(row) {
-        return row.googlePos !== "not found" && row.ytPos !== "not found";
-      }
       const key = currentSort.key;
-      const asc = currentSort.asc;
+      const asc = currentSort.asc ? 1 : -1;
 
-      // For position columns, prioritize rows with both sources
-      if (key === "multiPos" || key === "googlePos" || key === "ytPos") {
-        const aBoth = hasBoth(a);
-        const bBoth = hasBoth(b);
-        if (aBoth && !bBoth) return -1;
-        if (!aBoth && bBoth) return 1;
+      // Only apply "favor both platforms" logic for position columns
+      const isPositionKey = ["multiPos", "googlePos", "ytPos"].includes(key);
+
+      if (isPositionKey) {
+        // 1. Sort by selected position column
+        let vA = a[key] === "not found" ? Infinity : parseFloat(a[key]);
+        let vB = b[key] === "not found" ? Infinity : parseFloat(b[key]);
+        if (vA !== vB) return (vA - vB) * asc;
+
+        // 2. Favor rows with both platforms present
+        const aBoth = a.googlePos !== "not found" && a.ytPos !== "not found";
+        const bBoth = b.googlePos !== "not found" && b.ytPos !== "not found";
+        if (aBoth !== bBoth) return (bBoth - aBoth) * asc;
+
+        // 3. Tie-breaker: googlePos, then ytPos, then term
+        const aGoogle =
+          a.googlePos === "not found" ? Infinity : parseFloat(a.googlePos);
+        const bGoogle =
+          b.googlePos === "not found" ? Infinity : parseFloat(b.googlePos);
+        if (aGoogle !== bGoogle) return (aGoogle - bGoogle) * asc;
+
+        const aYt = a.ytPos === "not found" ? Infinity : parseFloat(a.ytPos);
+        const bYt = b.ytPos === "not found" ? Infinity : parseFloat(b.ytPos);
+        if (aYt !== bYt) return (aYt - bYt) * asc;
+
+        return a.term.localeCompare(b.term) * asc;
+      } else {
+        // For non-position columns, sort normally
+        let vA = a[key];
+        let vB = b[key];
+        // Handle numbers and nulls
+        if (key === "monthlySearches") {
+          vA = vA === null ? -Infinity : parseFloat(vA) || 0;
+          vB = vB === null ? -Infinity : parseFloat(vB) || 0;
+          if (vA !== vB) return (vA - vB) * asc;
+        } else {
+          // String sort
+          if (vA < vB) return -1 * asc;
+          if (vA > vB) return 1 * asc;
+        }
+        return 0;
       }
-
-      // Now sort by the selected key
-      let v1 = a[key];
-      let v2 = b[key];
-
-      // Treat "not found" as Infinity for ascending, -Infinity for descending
-      const notFoundValue = asc ? Infinity : -Infinity;
-      v1 = v1 === "not found" ? notFoundValue : parseFloat(v1) || 0;
-      v2 = v2 === "not found" ? notFoundValue : parseFloat(v2) || 0;
-
-      return asc ? v1 - v2 : v2 - v1;
     });
 }
 
